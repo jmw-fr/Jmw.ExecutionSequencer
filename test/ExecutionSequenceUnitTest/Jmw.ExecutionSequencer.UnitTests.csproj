@@ -1,54 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFramework>netcoreapp3.0</TargetFramework>
-        <IsPackable>false</IsPackable>
-        <CodeAnalysisRuleSet>..\..\stylecop.ruleset</CodeAnalysisRuleSet>
-        <PackageProjectUrl>https://github.com/jmw-fr/Jmw.ExecutionSequencer</PackageProjectUrl>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <Company>Jean-Marc Weeger</Company>
-        <Authors>Jean-Marc Weeger</Authors>
-        <Description>TODO.</Description>
-    </PropertyGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="..\..\stylecop.json" Link="StyleCop\stylecop.json" />
-  </ItemGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\netcoreapp3.0\Jmw.ExecutionSequencer.UnitTests.xml</DocumentationFile>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\netcoreapp3.0\Jmw.ExecutionSequencer.UnitTests.xml</DocumentationFile>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-  </PropertyGroup>  
-    
-    <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
-        <PackageReference Include="xunit" Version="2.4.1" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1"><IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-<PrivateAssets>all</PrivateAssets>
-</PackageReference>
-        <PackageReference Include="coverlet.collector" Version="1.1.0"><IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-<PrivateAssets>all</PrivateAssets>
-</PackageReference>
-        <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="GitVersionTask" Version="5.1.2">
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-          <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="Moq" Version="4.13.1" />
-        <PackageReference Include="AutoFixture" Version="4.11.0" />
-        <PackageReference Include="AutoFixture.AutoMoq" Version="4.11.0" />
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\..\src\ExecutionSequencer\Jmw.ExecutionSequencer.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ExecutionSequencer\Jmw.ExecutionSequencer.csproj" />
+  </ItemGroup>
 </Project>

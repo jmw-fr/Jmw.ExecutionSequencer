@@ -16,7 +16,7 @@ namespace Jmw.ExecutionSequencer
         /// </summary>
         /// <typeparam name="TSequenceUnitHandler">Type of the sequence unit object.</typeparam>
         /// <returns>Returns the current sequence.</returns>
-        ISequence<TExecutionContext> Then<TSequenceUnitHandler>()
+        ISequence<TExecutionContext> ContinueWith<TSequenceUnitHandler>()
             where TSequenceUnitHandler : class, ISequenceUnitHandler<TExecutionContext>;
 
         /// <summary>
@@ -25,24 +25,28 @@ namespace Jmw.ExecutionSequencer
         /// <typeparam name="TSequenceUnitHandler">Type of the sequence unit object.</typeparam>
         /// <typeparam name="TResponse">Type of the sequence unit result.</typeparam>
         /// <returns>Returns the sequence action to configure.</returns>
-        ISequenceReturnAction<TExecutionContext, TResponse> Then<TSequenceUnitHandler, TResponse>()
+        ISequenceReturnAction<TExecutionContext, TResponse> ContinueWith<TSequenceUnitHandler, TResponse>()
             where TSequenceUnitHandler : class, ISequenceUnitHandler<TExecutionContext, TResponse>;
 
         /// <summary>
         /// Sets an exception handler for a specific exception.
+        /// It is an equivalent of catch instruction.
         /// </summary>
         /// <typeparam name="TException">Type of exception to handle.</typeparam>
         /// <typeparam name="TExceptionHandler">Type of the handler object.</typeparam>
         /// <returns>Returns the current sequence.</returns>
-        ISequence<TExecutionContext> Catch<TException, TExceptionHandler>()
+        ISequence<TExecutionContext> HandleException<TException, TExceptionHandler>()
             where TException : Exception
             where TExceptionHandler : class, ISequenceExceptionHandler<TException, TExecutionContext>;
 
         /// <summary>
-        /// Finally handler for the execution sequence.
+        /// Finish handler for the execution sequence.
+        /// These handlers are executed after normal unit sequences and exceptions handlers.
+        /// It is an equivalent of finally instruction.
         /// </summary>
-        /// <typeparam name="TFinallyHandler">Type of the finally handler.</typeparam>
-        void Finally<TFinallyHandler>()
-            where TFinallyHandler : class, ISequenceFinallyHandler<TExecutionContext>;
+        /// <typeparam name="TFinallyHandler">Type of the finish handler.</typeparam>
+        /// <returns>Returns the current sequence.</returns>
+        ISequence<TExecutionContext> FinishWith<TFinallyHandler>()
+            where TFinallyHandler : class, ISequenceFinishHandler<TExecutionContext>;
     }
 }

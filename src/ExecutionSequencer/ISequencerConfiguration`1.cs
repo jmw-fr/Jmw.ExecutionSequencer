@@ -2,6 +2,8 @@
 
 namespace Jmw.ExecutionSequencer
 {
+    using System;
+
     /// <summary>
     /// Interface specification for configuring an ExecutionSequencer Engine.
     /// </summary>
@@ -14,6 +16,7 @@ namespace Jmw.ExecutionSequencer
         /// </summary>
         /// <typeparam name="TSequenceUnit">Type of the sequence unit.</typeparam>
         /// <returns>Returns the sequence object.</returns>
+        /// <exception cref="InvalidOperationException">The BeginWith function has already been called.</exception>
         ISequence<IExecutionContext> BeginWith<TSequenceUnit>()
             where TSequenceUnit : class, ISequenceUnitHandler<TExecutionContext>;
     }
