@@ -3,6 +3,7 @@
 namespace Jmw.ExecutionSequencer
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq.Expressions;
 
     /// <summary>
@@ -12,6 +13,26 @@ namespace Jmw.ExecutionSequencer
     public interface ISequence<TExecutionContext>
         where TExecutionContext : class, IExecutionContext
     {
+        /// <summary>
+        /// Gets the list of SequenceUnitHandlers in the sequence.
+        /// </summary>
+        IEnumerable<SequenceUnitHandlerDefinition> SequenceUnitHandlers { get; }
+
+        /// <summary>
+        /// Gets the list of exception Handlers in the sequence.
+        /// </summary>
+        IEnumerable<Type> ExceptionHandlers { get; }
+
+        /// <summary>
+        /// Gets the list of default Exception Handlers in the sequence.
+        /// </summary>
+        IEnumerable<Type> DefaultExceptionHandlers { get; }
+
+        /// <summary>
+        /// Gets the list of finish Handlers in the sequence.
+        /// </summary>
+        IEnumerable<Type> FinishHandlers { get; }
+
         /// <summary>
         /// Sets the next <see cref="ISequenceUnitHandler{TExecutionContext}"/> in the sequence.
         /// </summary>

@@ -12,20 +12,23 @@ namespace Jmw.ExecutionSequencer
         : ISequencerConfiguration<TExecutionContext>
         where TExecutionContext : class, IExecutionContext
     {
-        private Sequence<TExecutionContext> sequence = null;
+        /// <summary>
+        /// Gets the configured sequence.
+        /// </summary>
+        public Sequence<TExecutionContext> Sequence { get; private set; }
 
         /// <inheritdoc/>
         public ISequence<TExecutionContext> BeginWith<TSequenceUnit>()
             where TSequenceUnit : class, ISequenceUnitHandler<TExecutionContext>
         {
-            if (sequence != null)
+            if (Sequence != null)
             {
                 throw new InvalidOperationException(Properties.Resources.BeginWithAlreadyCalled);
             }
 
-            sequence = new Sequence<TExecutionContext>();
+            Sequence = new Sequence<TExecutionContext>();
 
-            return sequence;
+            return Sequence.ContinueWith<TSequenceUnit>();
         }
     }
 }

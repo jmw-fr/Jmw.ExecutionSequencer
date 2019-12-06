@@ -23,11 +23,11 @@ namespace Jmw.ExecutionSequencer.UnitTests
             // Act
 
             // Assert
-            Assert.NotNull(sut.SequenceUnitHandler);
+            Assert.NotNull(sut.SequenceUnitHandlers);
             Assert.NotNull(sut.ExceptionHandlers);
             Assert.NotNull(sut.DefaultExceptionHandlers);
             Assert.NotNull(sut.FinishHandlers);
-            Assert.Empty(sut.SequenceUnitHandler);
+            Assert.Empty(sut.SequenceUnitHandlers);
             Assert.Empty(sut.ExceptionHandlers);
             Assert.Empty(sut.DefaultExceptionHandlers);
             Assert.Empty(sut.FinishHandlers);
@@ -51,8 +51,8 @@ namespace Jmw.ExecutionSequencer.UnitTests
             // Assert
             Assert.NotNull(computed);
             Assert.Equal(sut, computed);
-            Assert.Single(sut.SequenceUnitHandler);
-            Assert.Collection(sut.SequenceUnitHandler, t =>
+            Assert.Single(sut.SequenceUnitHandlers);
+            Assert.Collection(sut.SequenceUnitHandlers, t =>
             {
                 Assert.Equal(type, t.SequenceUnitHandlerType);
                 Assert.Null(t.ExecutionContextPropertyInfo);
@@ -78,8 +78,8 @@ namespace Jmw.ExecutionSequencer.UnitTests
             // Assert
             Assert.NotNull(computed);
             Assert.Equal(sut, computed);
-            Assert.Single(sut.SequenceUnitHandler);
-            Assert.Collection(sut.SequenceUnitHandler, t =>
+            Assert.Single(sut.SequenceUnitHandlers);
+            Assert.Collection(sut.SequenceUnitHandlers, t =>
             {
                 Assert.Equal(type, t.SequenceUnitHandlerType);
                 Assert.Equal(propertyInfo, t.ExecutionContextPropertyInfo);

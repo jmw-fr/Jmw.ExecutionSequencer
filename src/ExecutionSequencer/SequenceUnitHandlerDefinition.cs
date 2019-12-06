@@ -10,7 +10,7 @@ namespace Jmw.ExecutionSequencer
     /// Represents a sequence unit handler definition.
     /// It is used by <see cref="ISequencer"/> in the process of a sequence.
     /// </summary>
-    public class SequenceUnitHandlerDefinition
+    public sealed class SequenceUnitHandlerDefinition
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SequenceUnitHandlerDefinition"/> class

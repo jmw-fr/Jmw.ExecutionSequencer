@@ -33,24 +33,16 @@ namespace Jmw.ExecutionSequencer
             finishHandlers = new List<Type>();
         }
 
-        /// <summary>
-        /// Gets the list of SequenceUnitHandlers in the sequence.
-        /// </summary>
-        public IEnumerable<SequenceUnitHandlerDefinition> SequenceUnitHandler => sequenceUnitHandlers;
+        /// <inheritdoc/>
+        public IEnumerable<SequenceUnitHandlerDefinition> SequenceUnitHandlers => sequenceUnitHandlers;
 
-        /// <summary>
-        /// Gets the list of exception Handlers in the sequence.
-        /// </summary>
+        /// <inheritdoc/>
         public IEnumerable<Type> ExceptionHandlers => exceptionHandlers;
 
-        /// <summary>
-        /// Gets the list of default Exception Handlers in the sequence.
-        /// </summary>
+        /// <inheritdoc/>
         public IEnumerable<Type> DefaultExceptionHandlers => defaultExceptionHandlers;
 
-        /// <summary>
-        /// Gets the list of finish Handlers in the sequence.
-        /// </summary>
+        /// <inheritdoc/>
         public IEnumerable<Type> FinishHandlers => finishHandlers;
 
         /// <inheritdoc/>
