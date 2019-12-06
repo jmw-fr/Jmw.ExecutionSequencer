@@ -10,7 +10,6 @@
 
 namespace Jmw.ExecutionSequencer.Properties {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -40,7 +39,7 @@ namespace Jmw.ExecutionSequencer.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Jmw.ExecutionSequencer.Properties.Resources", typeof(Resources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Jmw.ExecutionSequencer.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -67,6 +66,15 @@ namespace Jmw.ExecutionSequencer.Properties {
         internal static string BeginWithAlreadyCalled {
             get {
                 return ResourceManager.GetString("BeginWithAlreadyCalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to executionContextDestinationMember expression must return a property of {0}..
+        /// </summary>
+        internal static string ExecutionContextDestinationMember_NotAProperty {
+            get {
+                return ResourceManager.GetString("ExecutionContextDestinationMember_NotAProperty", resourceCulture);
             }
         }
     }

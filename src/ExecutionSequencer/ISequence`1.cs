@@ -3,6 +3,8 @@
 namespace Jmw.ExecutionSequencer
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq.Expressions;
 
     /// <summary>
     /// Represent an execution sequence.
@@ -11,6 +13,26 @@ namespace Jmw.ExecutionSequencer
     public interface ISequence<TExecutionContext>
         where TExecutionContext : class, IExecutionContext
     {
+        /// <summary>
+        /// Gets the list of SequenceUnitHandlers in the sequence.
+        /// </summary>
+        IEnumerable<SequenceUnitHandlerDefinition> SequenceUnitHandlers { get; }
+
+        /// <summary>
+        /// Gets the list of exception Handlers in the sequence.
+        /// </summary>
+        IEnumerable<Type> ExceptionHandlers { get; }
+
+        /// <summary>
+        /// Gets the list of default Exception Handlers in the sequence.
+        /// </summary>
+        IEnumerable<Type> DefaultExceptionHandlers { get; }
+
+        /// <summary>
+        /// Gets the list of finish Handlers in the sequence.
+        /// </summary>
+        IEnumerable<Type> FinishHandlers { get; }
+
         /// <summary>
         /// Sets the next <see cref="ISequenceUnitHandler{TExecutionContext}"/> in the sequence.
         /// </summary>
@@ -22,11 +44,13 @@ namespace Jmw.ExecutionSequencer
         /// <summary>
         /// Sets the next <see cref="ISequenceUnitHandler{TExecutionContext}"/> in the sequence.
         /// </summary>
+        /// <param name="executionContextDestinationMember">Expression to the TExecutionContext member.</param>
         /// <typeparam name="TSequenceUnitHandler">Type of the sequence unit object.</typeparam>
-        /// <typeparam name="TResponse">Type of the sequence unit result.</typeparam>
-        /// <returns>Returns the sequence action to configure.</returns>
-        ISequenceReturnAction<TExecutionContext, TResponse> ContinueWith<TSequenceUnitHandler, TResponse>()
-            where TSequenceUnitHandler : class, ISequenceUnitHandler<TExecutionContext, TResponse>;
+        /// <typeparam name="TMember">Type of the TExecutionContext member.</typeparam>
+        /// <returns>Returns the current sequence.</returns>
+        ISequence<TExecutionContext> ContinueWith<TSequenceUnitHandler, TMember>(
+            Expression<Func<TExecutionContext, TMember>> executionContextDestinationMember)
+            where TSequenceUnitHandler : class, ISequenceUnitHandler<TExecutionContext, TMember>;
 
         /// <summary>
         /// Sets an exception handler for a specific exception.

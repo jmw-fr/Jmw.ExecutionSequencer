@@ -120,4 +120,7 @@
   <data name="BeginWithAlreadyCalled" xml:space="preserve">
     <value>BeginWith function has already been called.</value>
   </data>
+  <data name="ExecutionContextDestinationMember_NotAProperty" xml:space="preserve">
+    <value>executionContextDestinationMember expression must return a property of {0}.</value>
+  </data>
 </root>

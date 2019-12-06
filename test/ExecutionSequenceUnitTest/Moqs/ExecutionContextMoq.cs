@@ -7,5 +7,9 @@ namespace Jmw.ExecutionSequencer.UnitTests.Moqs
     /// </summary>
     public class ExecutionContextMoq : IExecutionContext
     {
+        /// <summary>
+        /// Gets or sets some Execution Context property.
+        /// </summary>
+        public string ExecutionContextProperty { get; set; }
     }
 }

@@ -4,7 +4,10 @@ namespace Jmw.ExecutionSequencer
 {
     using System;
     using System.Collections.Generic;
-    using System.Reflection;
+    using System.Globalization;
+    using System.Linq.Expressions;
+    using Dawn;
+    using Jmw.ExecutionSequencer.Properties;
 
     /// <summary>
     /// Represents fluent configuration for <see cref="ISequencerConfiguration{TExecutionContext}"/>.
@@ -30,24 +33,16 @@ namespace Jmw.ExecutionSequencer
             finishHandlers = new List<Type>();
         }
 
-        /// <summary>
-        /// Gets the list of SequenceUnitHandlers in the sequence.
-        /// </summary>
-        public IEnumerable<SequenceUnitHandlerDefinition> SequenceUnitHandler => sequenceUnitHandlers;
+        /// <inheritdoc/>
+        public IEnumerable<SequenceUnitHandlerDefinition> SequenceUnitHandlers => sequenceUnitHandlers;
 
-        /// <summary>
-        /// Gets the list of exception Handlers in the sequence.
-        /// </summary>
+        /// <inheritdoc/>
         public IEnumerable<Type> ExceptionHandlers => exceptionHandlers;
 
-        /// <summary>
-        /// Gets the list of default Exception Handlers in the sequence.
-        /// </summary>
+        /// <inheritdoc/>
         public IEnumerable<Type> DefaultExceptionHandlers => defaultExceptionHandlers;
 
-        /// <summary>
-        /// Gets the list of finish Handlers in the sequence.
-        /// </summary>
+        /// <inheritdoc/>
         public IEnumerable<Type> FinishHandlers => finishHandlers;
 
         /// <inheritdoc/>
@@ -60,10 +55,33 @@ namespace Jmw.ExecutionSequencer
         }
 
         /// <inheritdoc/>
-        public ISequenceReturnAction<TExecutionContext, TResponse> ContinueWith<TSequenceUnitHandler, TResponse>()
-            where TSequenceUnitHandler : class, ISequenceUnitHandler<TExecutionContext, TResponse>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Using Dawn.Guard")]
+        public ISequence<TExecutionContext> ContinueWith<TSequenceUnitHandler, TMember>(
+            Expression<Func<TExecutionContext, TMember>> executionContextDestinationMember)
+            where TSequenceUnitHandler : class, ISequenceUnitHandler<TExecutionContext, TMember>
         {
-            return new SequenceReturnAction<TExecutionContext, TResponse>(this);
+            Guard.Argument(executionContextDestinationMember, nameof(executionContextDestinationMember))
+                .NotNull();
+
+            LambdaExpression lambda = executionContextDestinationMember;
+
+            if (lambda.Body.NodeType != ExpressionType.MemberAccess)
+            {
+                throw new InvalidOperationException(
+                    string.Format(
+                        CultureInfo.CurrentCulture,
+                        Resources.ExecutionContextDestinationMember_NotAProperty,
+                        typeof(TExecutionContext)));
+            }
+
+            MemberExpression member = (MemberExpression)lambda.Body;
+
+            sequenceUnitHandlers.Add(
+                new SequenceUnitHandlerDefinition(
+                    typeof(TSequenceUnitHandler),
+                    typeof(TExecutionContext).GetProperty(member.Member.Name)));
+
+            return this;
         }
 
         /// <inheritdoc/>
