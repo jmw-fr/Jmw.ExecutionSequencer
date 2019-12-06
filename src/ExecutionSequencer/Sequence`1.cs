@@ -4,7 +4,10 @@ namespace Jmw.ExecutionSequencer
 {
     using System;
     using System.Collections.Generic;
-    using System.Reflection;
+    using System.Globalization;
+    using System.Linq.Expressions;
+    using Dawn;
+    using Jmw.ExecutionSequencer.Properties;
 
     /// <summary>
     /// Represents fluent configuration for <see cref="ISequencerConfiguration{TExecutionContext}"/>.
@@ -60,10 +63,33 @@ namespace Jmw.ExecutionSequencer
         }
 
         /// <inheritdoc/>
-        public ISequenceReturnAction<TExecutionContext, TResponse> ContinueWith<TSequenceUnitHandler, TResponse>()
-            where TSequenceUnitHandler : class, ISequenceUnitHandler<TExecutionContext, TResponse>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Using Dawn.Guard")]
+        public ISequence<TExecutionContext> ContinueWith<TSequenceUnitHandler, TMember>(
+            Expression<Func<TExecutionContext, TMember>> executionContextDestinationMember)
+            where TSequenceUnitHandler : class, ISequenceUnitHandler<TExecutionContext, TMember>
         {
-            return new SequenceReturnAction<TExecutionContext, TResponse>(this);
+            Guard.Argument(executionContextDestinationMember, nameof(executionContextDestinationMember))
+                .NotNull();
+
+            LambdaExpression lambda = executionContextDestinationMember;
+
+            if (lambda.Body.NodeType != ExpressionType.MemberAccess)
+            {
+                throw new InvalidOperationException(
+                    string.Format(
+                        CultureInfo.CurrentCulture,
+                        Resources.ExecutionContextDestinationMember_NotAProperty,
+                        typeof(TExecutionContext)));
+            }
+
+            MemberExpression member = (MemberExpression)lambda.Body;
+
+            sequenceUnitHandlers.Add(
+                new SequenceUnitHandlerDefinition(
+                    typeof(TSequenceUnitHandler),
+                    typeof(TExecutionContext).GetProperty(member.Member.Name)));
+
+            return this;
         }
 
         /// <inheritdoc/>

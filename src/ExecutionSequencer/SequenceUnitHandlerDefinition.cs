@@ -3,6 +3,7 @@
 namespace Jmw.ExecutionSequencer
 {
     using System;
+    using System.Reflection;
     using Dawn;
 
     /// <summary>
@@ -29,7 +30,7 @@ namespace Jmw.ExecutionSequencer
         /// </summary>
         /// <param name="sequenceUnitHandlerType">Type of the sequence unit handler.</param>
         /// <param name="executionContextPropertyInfo">Property info of the <see cref="IExecutionContext" /> to set with the return value.</param>
-        internal SequenceUnitHandlerDefinition(Type sequenceUnitHandlerType, System.Reflection.PropertyInfo executionContextPropertyInfo)
+        internal SequenceUnitHandlerDefinition(Type sequenceUnitHandlerType, PropertyInfo executionContextPropertyInfo)
         {
             SequenceUnitHandlerType = Guard
                 .Argument(sequenceUnitHandlerType, nameof(sequenceUnitHandlerType)).NotNull()
@@ -48,6 +49,6 @@ namespace Jmw.ExecutionSequencer
         /// <summary>
         /// Gets the PropertyInfo of the <see cref="IExecutionContext" /> to set with the return value.
         /// </summary>
-        public System.Reflection.PropertyInfo ExecutionContextPropertyInfo { get; }
+        public PropertyInfo ExecutionContextPropertyInfo { get; }
     }
 }
