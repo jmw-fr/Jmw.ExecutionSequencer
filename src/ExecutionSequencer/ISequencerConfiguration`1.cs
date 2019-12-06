@@ -17,7 +17,7 @@ namespace Jmw.ExecutionSequencer
         /// <typeparam name="TSequenceUnit">Type of the sequence unit.</typeparam>
         /// <returns>Returns the sequence object.</returns>
         /// <exception cref="InvalidOperationException">The BeginWith function has already been called.</exception>
-        ISequence<IExecutionContext> BeginWith<TSequenceUnit>()
+        ISequence<TExecutionContext> BeginWith<TSequenceUnit>()
             where TSequenceUnit : class, ISequenceUnitHandler<TExecutionContext>;
     }
 }

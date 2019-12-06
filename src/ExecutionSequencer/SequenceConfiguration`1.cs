@@ -15,7 +15,7 @@ namespace Jmw.ExecutionSequencer
         private Sequence<TExecutionContext> sequence = null;
 
         /// <inheritdoc/>
-        public ISequence<IExecutionContext> BeginWith<TSequenceUnit>()
+        public ISequence<TExecutionContext> BeginWith<TSequenceUnit>()
             where TSequenceUnit : class, ISequenceUnitHandler<TExecutionContext>
         {
             if (sequence != null)

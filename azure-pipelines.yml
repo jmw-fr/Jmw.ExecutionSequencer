@@ -1,0 +1,86 @@
+trigger:
+- master
+- develop
+
+jobs:
+- job: 'Build'
+
+  pool:
+    vmImage: 'windows-latest'
+  workspace:
+    clean: all
+
+  steps:
+
+# Gitversion
+  - task: gittools.gitversion.gitversion-task.GitVersion@4
+    displayName: 'GitVersion'
+    inputs:
+      updateAssemblyInfo: false
+      preferBundledVersion: false
+
+# Counting lines
+  - task: Dealogic.cloc-vsts-extension.cloc.cloc@1
+    displayName: 'cloc .'
+    inputs:
+      arguments: .
+
+# Install ReportGenerator
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet tool install reportgenerator'
+    inputs:
+      command: custom
+      custom: 'tool'
+      arguments: 'install dotnet-reportgenerator-globaltool --tool-path tools'
+
+# Dotnet restore
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet restore'
+    inputs:
+      command: restore
+
+# Build
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet build'
+    inputs:
+      command: build
+      arguments: '--configuration $(BuildConfiguration)'
+
+# Unit tests
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet test'
+    inputs:
+      command: test
+      projects: Jmw.ExecutionSequencer.sln
+      arguments: '--configuration $(BuildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:Include="[*]Jmw.*"'
+
+# Generate Code Coverage Report
+  - task: CmdLine@2
+    displayName: 'Generate Code Coverage Report'
+    inputs:
+      script: 'reportgenerator "-reports:$(Build.SourcesDirectory)\**\coverage.cobertura.xml" "-targetdir:$(Build.ArtifactstagingDirectory)/coveragereport" "-reporttypes:Cobertura;HtmlInline_AzurePipelines"'
+      workingDirectory: tools
+
+# Copy packages to staging
+  - task: CopyFiles@2
+    displayName: 'Copy packages to staging'
+    inputs:
+      sourceFolder: '$(Build.SourcesDirectory)/src'
+      contents: '**/*.nupkg'
+      targetFolder: '$(build.artifactstagingdirectory)/packages'
+      flattenFolders: true
+
+# Publish Packages
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Packages'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)/packages'
+      ArtifactName: 'Packages'
+
+# Publish Code coverage Report
+  - task: PublishCodeCoverageResults@1
+    displayName: 'Publish Code Coverage'
+    inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: '$(Build.ArtifactstagingDirectory)/coveragereport/Cobertura.xml'
+      reportDirectory: '$(Build.ArtifactstagingDirectory)/coveragereport'

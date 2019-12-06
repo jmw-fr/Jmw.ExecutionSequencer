@@ -9,7 +9,7 @@ namespace Jmw.ExecutionSequencer
     /// Represents the action to execute with the result of a sequence.
     /// </summary>
     /// <typeparam name="TExecutionContext">Type of the execution context.</typeparam>
-    /// <typeparam name="TResponse">Type of the sequance unit result.</typeparam>
+    /// <typeparam name="TResponse">Type of the sequance unit return value.</typeparam>
     public interface ISequenceReturnAction<TExecutionContext, TResponse>
         where TExecutionContext : class, IExecutionContext
     {

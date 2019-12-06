@@ -44,9 +44,9 @@ namespace Jmw.ExecutionSequencer
         /// These handlers are executed after normal unit sequences and exceptions handlers.
         /// It is an equivalent of finally instruction.
         /// </summary>
-        /// <typeparam name="TFinallyHandler">Type of the finish handler.</typeparam>
+        /// <typeparam name="TFinishHandler">Type of the finish handler.</typeparam>
         /// <returns>Returns the current sequence.</returns>
-        ISequence<TExecutionContext> FinishWith<TFinallyHandler>()
-            where TFinallyHandler : class, ISequenceFinishHandler<TExecutionContext>;
+        ISequence<TExecutionContext> FinishWith<TFinishHandler>()
+            where TFinishHandler : class, ISequenceFinishHandler<TExecutionContext>;
     }
 }

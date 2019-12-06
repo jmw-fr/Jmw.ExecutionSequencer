@@ -7,55 +7,80 @@ namespace Jmw.ExecutionSequencer
     using System.Reflection;
 
     /// <summary>
-    /// Represents a sequence of execution.
+    /// Represents fluent configuration for <see cref="ISequencerConfiguration{TExecutionContext}"/>.
     /// </summary>
     /// <typeparam name="TExecutionContext">Type of the execution context object.</typeparam>
     public sealed class Sequence<TExecutionContext> :
-        ISequence<IExecutionContext>
+        ISequence<TExecutionContext>
         where TExecutionContext : class, IExecutionContext
     {
-        private readonly IList<Type> sequenceActionUnitHandlersNoReturn;
-        private readonly IList<Tuple<Type, PropertyInfo>> sequenceFunctionsUnitHandlers;
+        private readonly IList<SequenceUnitHandlerDefinition> sequenceUnitHandlers;
         private readonly IList<Type> exceptionHandlers;
-        private readonly IList<Type> finallyHandlers;
+        private readonly IList<Type> defaultExceptionHandlers;
+        private readonly IList<Type> finishHandlers;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Sequence{TExecutionContext}"/> class.
         /// </summary>
         internal Sequence()
         {
+            sequenceUnitHandlers = new List<SequenceUnitHandlerDefinition>();
             exceptionHandlers = new List<Type>();
-            sequenceActionUnitHandlersNoReturn = new List<Type>();
-            sequenceFunctionsUnitHandlers = new List<Tuple<Type, PropertyInfo>>();
-            finallyHandlers = new List<Type>();
+            defaultExceptionHandlers = new List<Type>();
+            finishHandlers = new List<Type>();
+        }
+
+        /// <summary>
+        /// Gets the list of SequenceUnitHandlers in the sequence.
+        /// </summary>
+        public IEnumerable<SequenceUnitHandlerDefinition> SequenceUnitHandler => sequenceUnitHandlers;
+
+        /// <summary>
+        /// Gets the list of exception Handlers in the sequence.
+        /// </summary>
+        public IEnumerable<Type> ExceptionHandlers => exceptionHandlers;
+
+        /// <summary>
+        /// Gets the list of default Exception Handlers in the sequence.
+        /// </summary>
+        public IEnumerable<Type> DefaultExceptionHandlers => defaultExceptionHandlers;
+
+        /// <summary>
+        /// Gets the list of finish Handlers in the sequence.
+        /// </summary>
+        public IEnumerable<Type> FinishHandlers => finishHandlers;
+
+        /// <inheritdoc/>
+        public ISequence<TExecutionContext> ContinueWith<TSequenceUnitHandler>()
+            where TSequenceUnitHandler : class, ISequenceUnitHandler<TExecutionContext>
+        {
+            sequenceUnitHandlers.Add(new SequenceUnitHandlerDefinition(typeof(TSequenceUnitHandler)));
+
+            return this;
         }
 
         /// <inheritdoc/>
-        ISequence<IExecutionContext> ISequence<IExecutionContext>.HandleException<TException, TExceptionHandler>()
+        public ISequenceReturnAction<TExecutionContext, TResponse> ContinueWith<TSequenceUnitHandler, TResponse>()
+            where TSequenceUnitHandler : class, ISequenceUnitHandler<TExecutionContext, TResponse>
+        {
+            return new SequenceReturnAction<TExecutionContext, TResponse>(this);
+        }
+
+        /// <inheritdoc/>
+        public ISequence<TExecutionContext> HandleException<TException, TExceptionHandler>()
+            where TException : Exception
+            where TExceptionHandler : class, ISequenceExceptionHandler<TException, TExecutionContext>
         {
             exceptionHandlers.Add(typeof(TExceptionHandler));
             return this;
         }
 
         /// <inheritdoc/>
-        ISequence<IExecutionContext> ISequence<IExecutionContext>.FinishWith<TFinallyHandler>()
+        public ISequence<TExecutionContext> FinishWith<TFinishHandler>()
+            where TFinishHandler : class, ISequenceFinishHandler<TExecutionContext>
         {
-            finallyHandlers.Add(typeof(TFinallyHandler));
+            finishHandlers.Add(typeof(TFinishHandler));
             return this;
-        }
-
-        /// <inheritdoc/>
-        ISequence<IExecutionContext> ISequence<IExecutionContext>.ContinueWith<TSequenceUnitHandler>()
-        {
-            sequenceActionUnitHandlersNoReturn.Add(typeof(TSequenceUnitHandler));
-            return this;
-        }
-
-        /// <inheritdoc/>
-        ISequenceReturnAction<IExecutionContext, TResponse> ISequence<IExecutionContext>.ContinueWith<TSequenceUnitHandler, TResponse>()
-        {
-            // TODO. Add Handler handler.
-            throw new NotImplementedException();
         }
     }
 }
